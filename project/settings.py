@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-
+from dotenv import load_dotenv
+import os
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,10 +22,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-b(1d0nfok@esnl7z=5c&i^2c)#rs4_pfru75^i*e6s6y4a7$36'
-
+SECRET_KEY = os.getenv('SECRET_KEY','123')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG',True)
 
 ALLOWED_HOSTS = []
 
@@ -38,6 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'restaurant',
+    'rest_framework',
+    'account',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -76,8 +80,14 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'restaurant',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST':'localhost',
+        'PORT':'3306', 
     }
 }
 
@@ -122,3 +132,16 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL= 'account.User'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    # ],
+    'DATETIME_FORMAT': "%Y-%m-%d %I:%M %p",
+    'TIME_FORMAT': "%I:%M %p",
+}
